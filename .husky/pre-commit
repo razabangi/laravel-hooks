@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo "-----------------------------"
+echo "| Running Pre-Commit Checks |"
+echo "-----------------------------"
+
+if ! command -v php >/dev/null 2>&1; then
+  echo "PHP is not installed. Skipping PHP linting."
+  exit 0  # Or `exit 1` to block the commit
+fi
+
+PINT="./vendor/bin/pint"
+
+if [ -e "$PINT.bat" ]
+    then "$PINT.bat" . --test
+    else "$PINT" . --test
+fi
+
+if [ $? -ne 0 ]
+then
+    echo "Found some linting errors. Please fix by running 'composer lint-fix'."
+    exit 1
+fi
